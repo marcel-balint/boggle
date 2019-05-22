@@ -45,7 +45,54 @@ def all_grid_neighbours(grid):
     
     
     
+def path_to_word(grid, path):
+    """Add all of the letters on the path to a string"""
+    return "".join([grid[p] for p in path])
     
+    
+def search(grid, dictionary):
+    """Search through the paths to locate words by matching strings to words in dictionary"""
+    neighbours = all_grid_neighbours(grid)
+    paths = []
+
+    def do_search(path):
+        word = path_to_word(grid, path)
+        if word in dictionary:
+            paths.append(path)
+        for next_pos in neighbours[path[-1]]:
+            if next_pos not in path:
+                do_search(path + [next_pos])
+    
+    for position in grid:
+        do_search([position])
+    
+    words = []
+    for path in paths:
+        words.append(path_to_word(grid, path))
+    return set(words)
+
+
+def get_dictionary(dictionary_file):
+    """Load dictionary file"""
+    with open(dictionary_file) as f:
+        return [w.strip().upper() for w in f]
+    
+    
+def main():
+    """This function will run the hole project"""
+    grid = make_grid(3, 3)
+    dictionary = get_dictionary('words.txt')
+    words = search(grid, dictionary)
+    for word in words:
+        print(word)
+    print("found %s words" %len(words))    
+    
+    
+    
+    
+    """The code within this statement will only execute when the file is run directly"""
+if __name__ == "__main__":
+     main()
     
     
     
